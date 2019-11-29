@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <stdexcept>
+#include <map>
 
 using namespace std;
 
@@ -21,25 +23,11 @@ int main(int argc, const char * argv[]) {
     // 4. format into KF obj
     // 5. run the filter until terminated
     
+    int a = 1;
+    float b = 5.4;
     cout<<argv[0]<<"\n";
     cout<<"Kalman Filter\n\n";
-    cout<<"\n";
-    vector<vector <int>> F{{0,1,2},{3,4,5},{6,7,8}};
-    vector<vector <int>> G{{0,1,2},{3,4,5},{6,7,8}};
-    vector<vector <int>> Z{{0,1,2,3},{3,4,5,6},{6,7,8,9}};
-    vector<vector <int>> H;
-    F[2][2] = 10;
-    cout<<"\n";
-    Matrix::print(F);
-    Matrix::print(Z);
-    H = Matrix::matSub(F, G);
-    Matrix::print(H);
-    cout<<"\n";
-    H = Matrix::matMult(F, Z);
-    Matrix::print(H);
-    cout<<"\n";
-    H = Matrix::TPose(F);
-    Matrix::print(H);
+    cout<<a*b;
     cout<<"\n";
     return 0;
 }

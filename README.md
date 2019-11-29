@@ -15,8 +15,8 @@ Q: uncertainty matrix (turbulence)
 
 UPDATE:
 H: sensor matrix
-R: noise matrix (used only to find K) (may not include this)
-z:  sensor reading vector
+R: measurement noise cov (used only to find K)
+z:  sensor reading vector (may get from random function instead of pre-defined vector)
 K: kalman gain matrix (determined from H, P, R)
 
 operations: add, subtract, mult, inv (det and adj), tpose, normalize.
