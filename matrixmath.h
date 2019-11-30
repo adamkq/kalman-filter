@@ -15,9 +15,9 @@ class Matrix{
         {
            for (int i=0; i<A.size(); i++)
            {
-               for (int j=0; j<A[0].size(); j++)
+               for (int j=0; j<A[i].size(); j++)
                {
-                   cout << A[i][j] << " ";
+                   cout << A[i][j] << "\t";
                }
                cout << endl;
            }
@@ -102,12 +102,12 @@ class Matrix{
             return C;
         }
     
-        static vector<vector <double>> matId(int n)
+        static vector<vector <double>> matId(int n, double entry = 1)
         {
             vector<vector <double>> Iden(n, vector <double> (n));
             for (int i = 0; i < n; i++)
             {
-                Iden[i][i] = 1.0;
+                Iden[i][i] = entry;
             }
             return Iden;
         }
@@ -116,7 +116,7 @@ class Matrix{
         
         static vector<vector <double>> rowReduce(vector<vector <double>> A, vector<vector <double>> C)
         {
-            // Attempts to solve AB = C for B through Gaussian methods (precond. all mats square)
+            // Attempts to solve AB = C for B through Gaussian methods.
             // If C is an Id. matrix, B will be equal to inv(A)
             // If a div by zero condition is encountered, the output matrix will contain inf or NaN values. These will be checked by the KF.
             // As designed, the KF only performs an inversion when it initializes (to find the Kalman Gain), so this fcn only has to be called once, not on every timestep.
@@ -144,7 +144,7 @@ class Matrix{
                 for (int j = i + 1; j < N; j++)
                 {
                     rowCoeff = -A[j][i]/leadCoeff; // cancel elements in column
-                    for (int k = i; k < N; k++)
+                    for (int k = 0; k < N; k++)
                     {
                         A[j][k] += A[i][k] * rowCoeff;
                         C[j][k] += C[i][k] * rowCoeff;
@@ -152,12 +152,8 @@ class Matrix{
                 }
             }
             
-            cout<<"row echelon Finished. A and C Shown:\n";
-            print(A);cout<<"\n";
-            print(C);cout<<"\n";
-            
             // reduced row
-            for (int i = N-1; i > 0; i--)
+            for (int i = N-1; i >= 0; i--)
             {
                 leadCoeff = A[i][i]; // diagonal element
                 for (int j = i - 1; j >= 0; j--)
@@ -176,10 +172,7 @@ class Matrix{
                     C[i][k] = C[i][k] / leadCoeff;
                 }
             }
-            
-            cout<<"rowReduce Finished. A and C Shown: \n";
-            print(A);cout<<"\n";
-            print(C);cout<<"\n";
+
             return C;
         }
     
