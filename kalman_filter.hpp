@@ -90,10 +90,10 @@ void KalmanFilter::repr()
 void KalmanFilter::printState()
 {
     if (t == 0){
-        cout<<"\nTime:\t\tStates ("<<x_obs.size()<<"):"<<"\n";
+        cout<<"\nTime:\tStates ("<<x_obs.size()<<"):"<<"\n";
     }
     
-    cout<<t<<"\t\t";
+    cout<<t<<"\t";
     for (int i = 0; i < x_obs.size(); i++)
     {
         cout<<x_obs[i][0]<<"\t";
@@ -133,10 +133,16 @@ void KalmanFilter::update(vector <double> measure, vector <double> control)
     // update K
     Inv = Matrix::add(Matrix::mult(C, P_pre, Matrix::tpose(C)), R);
     Inv = Matrix::rowReduce(Inv, Matrix::iden(Inv.size()));
-                
-    K = Matrix::mult(P_pre, Matrix::tpose(C), Inv);
 
+    if (Matrix::hasNaNInf(Inv))
+    {
+        throw runtime_error("Kalman Gain Non-Invertible.");
+    }
+                            
+    K = Matrix::mult(P_pre, Matrix::tpose(C), Inv);
+    
     // update state
+    // y = Normal(C * x_obs, R)
     noise = Matrix::subtract(y, Matrix::mult(C, x_pre));
     x_obs = Matrix::add(x_pre, Matrix::mult(K, noise));
     P_obs = Matrix::subtract(P_pre, Matrix::mult(K, C, P_pre));

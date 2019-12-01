@@ -6,6 +6,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <vector>
 #include <stdexcept>
@@ -17,12 +18,35 @@ using namespace std;
 #include "kalman_filter.hpp"
 
 int main(int argc, const char * argv[]) {
-    // 1. account for user inputs (write to log/console, exit condition)
-    // 2. initialize matrices internally
-    // 3. format into state-space object/ KF
-    // 4. run the filter until terminated
     cout<<"Kalman Filter\n";
-    cout<<argv[0]<<"\n";
+    bool consoleFlag = false;
+    bool loggingFlag = false;
+    string logfile;
+    ofstream f;
+    
+    for (int i = 0; i < argc; i++)
+    {
+        if (string(argv[i]) == "-c")
+        {
+            consoleFlag = true;
+        }
+        
+        if (string(argv[i]) == "-f" && i < argc - 1)
+        {
+            logfile = string(argv[i + 1]);
+            try
+            {
+                f.open(logfile);
+                loggingFlag = true;
+                cout<<"Logging to: "<<logfile<<"\n";
+            }
+            catch (...)
+            {
+                cout<<"A problem occurred when trying to open the specified log file. Data will not be logged.\n";
+            }
+        }
+    }
+    
     
     cout<<fixed;
     cout<<setprecision(3); // align tab-separated values with -sign
@@ -80,7 +104,7 @@ int main(int argc, const char * argv[]) {
     };
     
     // initial update. This is turned into a 2D vector within the KF.
-    vector<double> xi = {1, 1, -9.81};
+    vector <double> xi = {1, 1, -9.81};
     vector <double> x_obs;
     
     // measurement and control. These are turned into a 2D vector within the KF. Control inputs are typically treated as exact (non-noisy).
@@ -101,25 +125,35 @@ int main(int argc, const char * argv[]) {
     };
     
     KalmanFilter kf(A, B, C, Q, P, R);
-    kf.repr();
     kf.initialize(xi, dt);
     
-    kf.printState();
-    
+    if (consoleFlag)
+    {
+        kf.repr();
+        kf.printState();
+    }
+
     for (int i = 0; i < min(100, int(measurements.size())); i++)
     {
-        // to demonstrate multiple measurements, the velocity is being 'measured' as a linear extraploation from xi
+        // to demonstrate multiple measurements, the velocity is being 'measured' as a linear extrapolation from xi
         measure = {measurements[i], xi[1] + xi[2]*kf.getTime()};
         
         // ramp input 'thrust' for demonstration
-        control = {1 * kf.getTime()};
+        control = {0.0 * kf.getTime()};
         
         kf.update(measure, control);
-        kf.printState();
-        x_obs = kf.getState();
+        if (consoleFlag)
+        {
+            kf.printState();
+        }
+        x_obs = kf.getState(); // will use for logging
     }
     
-    cout<<"Kalman Filter stopped after "<<kf.getTime()<<" seconds";
+    if (loggingFlag)
+    {
+        f.close();
+    }
+    // cout<<"Kalman Filter stopped after "<<kf.getTime()<<" seconds simulated.";
     cout<<"\n";
     return 0;
 }

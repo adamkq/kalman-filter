@@ -69,9 +69,15 @@ int main(int argc, const char * argv[]) {
     H = Matrix::rowReduce(B, Matrix::iden(B.size()));
     Matrix::print(H);cout<<"\n";
     
+    cout<<"Has NaN or Inf 4x4\n";
+    cout<<Matrix::hasNaNInf(H)<<"\n\n";
+    
     cout<<"Row Reduce Invert 2x2 Singular\n";
     H = Matrix::rowReduce({{2,4},{3,6}}, Matrix::iden(2));
     Matrix::print(H);cout<<"\n";
+    
+    cout<<"Has NaN or Inf 2x2 Singular\n";
+    cout<<Matrix::hasNaNInf(H)<<"\n";
     
     cout<<"\n";
 }

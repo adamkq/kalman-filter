@@ -7,9 +7,9 @@ PREDICTION:
 x_pre: predicted state vector
 P_pre: predicted covariance matrix
 A: state matrix (based off of physical model)
-u: control vector (0, step, ramp, or sine for each controllable state)
+u: control vector
 B: control matrix (usually identity with 1's corresponding to the controllable states)
-Q: Process Noise matrix (turbulence)
+Q: process uncertainty matrix (turbulence)
 
 UPDATE:
 

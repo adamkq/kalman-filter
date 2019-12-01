@@ -8,6 +8,7 @@
 #ifndef matrixmath_h
 #define matrixmath_h
 
+#include <math.h>
 
 class Matrix{
     public:
@@ -127,7 +128,7 @@ class Matrix{
     
         /**
          * Attempts to solve AB = C for B through Gaussian methods.
-         * If C is an Id. matrix, B will be equal to inv(A)
+         * If C is an Iden. matrix, B will be equal to inv(A)
          * If a div by zero condition is encountered, the output matrix will contain inf or NaN values. These will be checked by the KF.
          */
         static vector<vector <double>> rowReduce(vector<vector <double>> A, vector<vector <double>> C)
@@ -135,10 +136,10 @@ class Matrix{
             int N = A.size();
             double leadCoeff, rowCoeff;
             
-            // Checks if A has more rows than C. A may have fewer rows than C.
-            if (N > C.size())
+            // Checks if A has more rows or columns than C. C can be larger than A.
+            if (N > C.size() || A[0].size() > C[0].size())
             {
-                throw runtime_error("Matrix to be reduced (A) must have the same number of rows or fewer as its product (C).");
+                throw runtime_error("Matrix to be reduced (A) must be the same size or smaller as its product (C).");
             }
             
             // degenerate case
@@ -185,6 +186,22 @@ class Matrix{
             }
 
             return C;
+        }
+    
+        /// Returns true if any values are NaN or Inf, false otherwise
+        static bool hasNaNInf(vector<vector <double>> A)
+        {
+            for (int i=0; i<A.size(); i++)
+            {
+                for (int j=0; j<A[i].size(); j++)
+                {
+                    if (isnan(A[i][j]) || isinf(A[i][j]))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     
         
