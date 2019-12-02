@@ -34,24 +34,25 @@ int main(int argc, const char * argv[]) {
         if (string(argv[i]) == "-f" && i < argc - 1)
         {
             logfile = string(argv[i + 1]);
-            try
+            f.open(logfile);
+
+            if (f.is_open())
             {
-                f.open(logfile);
                 loggingFlag = true;
                 cout<<"Logging to: "<<logfile<<"\n";
             }
-            catch (...)
+            else
             {
                 cout<<"A problem occurred when trying to open the specified log file. Data will not be logged.\n";
             }
         }
     }
     
-    
     cout<<fixed;
     cout<<setprecision(3); // align tab-separated values with -sign
     
     double dt = 1.0/30; // timestep
+    double t; // total time
     
     // n states
     // m <= n measurements (outputs)
@@ -105,7 +106,7 @@ int main(int argc, const char * argv[]) {
     
     // initial update. This is turned into a 2D vector within the KF.
     vector <double> xi = {1, 1, -9.81};
-    vector <double> x_obs;
+    vector <double> x_obs; // state
     
     // measurement and control. These are turned into a 2D vector within the KF. Control inputs are typically treated as exact (non-noisy).
     vector<double> measure;
@@ -132,10 +133,24 @@ int main(int argc, const char * argv[]) {
         kf.repr();
         kf.printState();
     }
+    if (loggingFlag)
+    {
+        // write to file, no header
+        t = kf.getTime();
+        x_obs = kf.getState();
+        f<<to_string(t)<<"\t";
+        
+        for (int j = 0; j < x_obs.size(); j++)
+        {
+            f<<to_string(x_obs[j])<<"\t";
+        }
+        f<<endl;
+    }
+    
 
     for (int i = 0; i < min(100, int(measurements.size())); i++)
     {
-        // to demonstrate multiple measurements, the velocity is being 'measured' as a linear extrapolation from xi
+        // to demonstrate multiple measurements, the velocity is being bogus-measured as a linear extrapolation from xi
         measure = {measurements[i], xi[1] + xi[2]*kf.getTime()};
         
         // ramp input 'thrust' for demonstration
@@ -146,7 +161,19 @@ int main(int argc, const char * argv[]) {
         {
             kf.printState();
         }
-        x_obs = kf.getState(); // will use for logging
+        if (loggingFlag)
+        {
+            // write to file
+            t = kf.getTime();
+            x_obs = kf.getState();
+            f<<to_string(t)<<"\t";
+            
+            for (int j = 0; j < x_obs.size(); j++)
+            {
+                f<<to_string(x_obs[j])<<"\t";
+            }
+            f<<endl;
+        }
     }
     
     if (loggingFlag)
