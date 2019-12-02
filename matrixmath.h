@@ -13,7 +13,7 @@
 class Matrix{
     public:
         /// Print the matrix.
-        static void print(vector<vector <double>> A)
+        static void print(vector<vector <double>>& A)
         {
            for (int i=0; i<A.size(); i++)
            {
@@ -189,7 +189,7 @@ class Matrix{
         }
     
         /// Returns true if any values are NaN or Inf, false otherwise
-        static bool hasNaNInf(vector<vector <double>> A)
+        static bool hasNaNInf(vector<vector <double>>& A)
         {
             for (int i=0; i<A.size(); i++)
             {
