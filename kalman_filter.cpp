@@ -1,6 +1,6 @@
 //
 //  kalman_filter.cpp
-//  
+//
 //
 //  Created by Adam Kilbourne on 2019-11-24.
 //
@@ -18,7 +18,7 @@ using namespace std;
 #include "kalman_filter.hpp"
 
 int main(int argc, const char * argv[]) {
-    cout<<"Kalman Filter\n";
+    cout<<"Kalman Filter Program.\n";
     bool consoleFlag = false;
     bool loggingFlag = false;
     string logfile;
@@ -34,14 +34,21 @@ int main(int argc, const char * argv[]) {
         if (string(argv[i]) == "-f" && i < argc - 1)
         {
             logfile = string(argv[i + 1]);
-            f.open(logfile);
-
-            if (f.is_open())
+            // do not overwrite code
+            if (logfile.find(".cpp") == string::npos
+                && logfile.find(".c") == string::npos
+                && logfile.find(".hpp") == string::npos
+                && logfile.find(".h") == string::npos)
             {
-                loggingFlag = true;
-                cout<<"Logging to: "<<logfile<<"\n";
+                f.open(logfile);
+
+                if (f.is_open())
+                {
+                    loggingFlag = true;
+                    cout<<"Logging to: "<<logfile<<"\n";
+                }
             }
-            else
+            if (!loggingFlag)
             {
                 cout<<"A problem occurred when trying to open the specified log file. Data will not be logged.\n";
             }
@@ -133,6 +140,7 @@ int main(int argc, const char * argv[]) {
         kf.repr();
         kf.printState();
     }
+    
     if (loggingFlag)
     {
         // write to file, no header
@@ -147,7 +155,6 @@ int main(int argc, const char * argv[]) {
         f<<endl;
     }
     
-
     for (int i = 0; i < min(100, int(measurements.size())); i++)
     {
         // to demonstrate multiple measurements, the velocity is being bogus-measured as a linear extrapolation from xi
