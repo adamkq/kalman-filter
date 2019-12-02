@@ -157,7 +157,7 @@ int main(int argc, const char * argv[]) {
     
     for (int i = 0; i < min(100, int(measurements.size())); i++)
     {
-        // to demonstrate multiple measurements, the velocity is being bogus-measured as a linear extrapolation from xi
+        // to demonstrate multiple measurements, the velocity is being mock-measured as a linear extrapolation from xi
         measure = {measurements[i], xi[1] + xi[2]*kf.getTime()};
         
         // ramp input 'thrust' for demonstration

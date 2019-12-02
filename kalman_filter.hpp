@@ -38,7 +38,7 @@ public:
     vector <double> getState();
     /// Return elapsed time.
     double getTime();
-    /// Update.
+    /// Increment the KF to the next state.
     void update(vector <double> y, vector <double> u);
 };
 
