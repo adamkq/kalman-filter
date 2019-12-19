@@ -34,7 +34,7 @@ int main(int argc, const char * argv[]) {
         if (string(argv[i]) == "-f" && i < argc - 1)
         {
             logfile = string(argv[i + 1]);
-            // do not overwrite code
+            // do not overwrite code files
             if (logfile.find(".cpp") == string::npos
                 && logfile.find(".c") == string::npos
                 && logfile.find(".hpp") == string::npos
@@ -132,6 +132,9 @@ int main(int argc, const char * argv[]) {
         0.562381751596, 0.355468474885, -0.155607486619, -0.287198661013, -0.602973173813
     };
     
+    // if you want to stop early
+    int measurements_limit = 100;
+    
     KalmanFilter kf(A, B, C, Q, P, R);
     kf.initialize(xi, dt);
     
@@ -155,13 +158,13 @@ int main(int argc, const char * argv[]) {
         f<<endl;
     }
     
-    for (int i = 0; i < min(100, int(measurements.size())); i++)
+    for (int i = 0; i < min(measurements_limit, int(measurements.size())); i++)
     {
         // to demonstrate multiple measurements, the velocity is being mock-measured as a linear extrapolation from xi
         measure = {measurements[i], xi[1] + xi[2]*kf.getTime()};
         
         // ramp input 'thrust' for demonstration
-        control = {0.0 * kf.getTime()};
+        control = {1.0 * kf.getTime()};
         
         kf.update(measure, control);
         if (consoleFlag)
@@ -187,7 +190,7 @@ int main(int argc, const char * argv[]) {
     {
         f.close();
     }
-    // cout<<"Kalman Filter stopped after "<<kf.getTime()<<" seconds simulated.";
+    cout<<"Kalman Filter stopped after "<<kf.getTime()<<" seconds simulated.";
     cout<<"\n";
     return 0;
 }
