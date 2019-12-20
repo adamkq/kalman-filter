@@ -34,23 +34,31 @@ int main(int argc, const char * argv[]) {
         if (string(argv[i]) == "-f" && i < argc - 1)
         {
             logfile = string(argv[i + 1]);
+            loggingFlag = true;
+            
             // do not overwrite code files
-            if (logfile.find(".cpp") == string::npos
-                && logfile.find(".c") == string::npos
-                && logfile.find(".hpp") == string::npos
-                && logfile.find(".h") == string::npos)
+            vector <string> fileExtCheck = {".cpp",".c",".hpp",".h",".md"};
+            for (auto & extension : fileExtCheck)
+            {
+                if (logfile.find(extension) != string::npos)
+                {
+                    loggingFlag = false;
+                    break;
+                }
+            }
+            
+            if (loggingFlag)
             {
                 f.open(logfile);
 
                 if (f.is_open())
                 {
-                    loggingFlag = true;
                     cout<<"Logging to: "<<logfile<<"\n";
                 }
-            }
-            if (!loggingFlag)
-            {
-                cout<<"A problem occurred when trying to open the specified log file. Data will not be logged.\n";
+                else
+                {
+                    cout<<"A problem occurred when trying to open the specified log file. Data will not be logged.\n";
+                }
             }
         }
     }
@@ -135,29 +143,16 @@ int main(int argc, const char * argv[]) {
     // if you want to stop early
     int measurements_limit = 100;
     
+    // no empty constructor
     KalmanFilter kf(A, B, C, Q, P, R);
     kf.initialize(xi, dt);
     
     if (consoleFlag)
     {
         kf.repr();
-        kf.printState();
     }
     
-    if (loggingFlag)
-    {
-        // write to file, no header
-        t = kf.getTime();
-        x_obs = kf.getState();
-        f<<to_string(t)<<"\t";
-        
-        for (int j = 0; j < x_obs.size(); j++)
-        {
-            f<<to_string(x_obs[j])<<"\t";
-        }
-        f<<endl;
-    }
-    
+    cout<<"\nTime:\tStates ("<<xi.size()<<"):"<<"\n";
     for (int i = 0; i < min(measurements_limit, int(measurements.size())); i++)
     {
         // to demonstrate multiple measurements, the velocity is being mock-measured as a linear extrapolation from xi
@@ -166,24 +161,32 @@ int main(int argc, const char * argv[]) {
         // ramp input 'thrust' for demonstration
         control = {1.0 * kf.getTime()};
         
-        kf.update(measure, control);
+        t = kf.getTime();
+        x_obs = kf.getState();
+        
         if (consoleFlag)
         {
-            kf.printState();
+            cout<<t<<"\t";
+            for (auto & state : x_obs)
+            {
+                // column vector
+                cout<<state<<"\t";
+            }
+            cout<<endl;
         }
+        
         if (loggingFlag)
         {
             // write to file
-            t = kf.getTime();
-            x_obs = kf.getState();
             f<<to_string(t)<<"\t";
-            
-            for (int j = 0; j < x_obs.size(); j++)
+            for (auto & state : x_obs)
             {
-                f<<to_string(x_obs[j])<<"\t";
+                f<<to_string(state)<<"\t";
             }
             f<<endl;
         }
+        
+        kf.update(measure, control);
     }
     
     if (loggingFlag)

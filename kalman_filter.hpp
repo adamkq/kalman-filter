@@ -33,8 +33,6 @@ public:
     /// Initialize the filter with a best guess.
     void initialize(vector <double> xi, double dt);
     /// Print the time and state to the console in row-form.
-    void printState();
-    /// Return x_obs as 1D vector.
     vector <double> getState();
     /// Return elapsed time.
     double getTime();
@@ -49,12 +47,12 @@ KalmanFilter::KalmanFilter(
         vector<vector <double>> Q,
         vector<vector <double>> P,
         vector<vector <double>> R
-         ): A(A.size(), vector<double> (A[0].size())),
-            B(B.size(), vector<double> (B[0].size())),
-            C(C.size(), vector<double> (C[0].size())),
-            Q(Q.size(), vector<double> (Q[0].size())),
-            P0(P.size(), vector<double> (P[0].size())),
-            R(R.size(), vector<double> (R[0].size())),
+         ): A(A),
+            B(B),
+            C(C),
+            Q(Q),
+            P0(P),
+            R(R),
             x_pre(1, vector<double>(A.size())),
             x_obs(1, vector<double>(A.size())),
             P_pre(P0),
@@ -85,20 +83,7 @@ void KalmanFilter::repr()
     Matrix::print(R);
     cout<<"\nK:\n";
     Matrix::print(K);
-}
-
-void KalmanFilter::printState()
-{
-    if (t == 0){
-        cout<<"\nTime:\tStates ("<<x_obs.size()<<"):"<<"\n";
-    }
-    
-    cout<<t<<"\t";
-    for (int i = 0; i < x_obs.size(); i++)
-    {
-        cout<<x_obs[i][0]<<"\t";
-    }
-    cout<<"\n";
+    cout<<"\n---\n";
 }
 
 vector <double> KalmanFilter::getState()
