@@ -1,6 +1,6 @@
 # Purpose
 
-Implement a Kalman Filter in C++. A Kalman filter is a popular state estimation algorithm, which are used to estimate parameters of a system that are otherwise difficult or impossible to measure. It models system behaviour by using a set of differential equations.
+Implement a Kalman Filter (KF) in C++. A KF is a popular state estimation algorithm, which are used to estimate parameters of a system that are otherwise difficult or impossible to measure. It models system behaviour by using a set of differential equations.
 
 # Definition
 
