@@ -1,8 +1,10 @@
-# Purpose
+# Kalman Filter
+
+## Purpose
 
 Implement a Kalman Filter (KF) in C++. A KF is a popular state estimation algorithm, which are used to estimate parameters of a system that are otherwise difficult or impossible to measure. It models system behaviour by using a set of differential equations.
 
-# Definition
+## Definition
 
 The Kalman Filter has many variants but this project uses the standard equations for a KF. The variables are defined as:
 
@@ -24,6 +26,11 @@ The Kalman Filter has many variants but this project uses the standard equations
 * R: measurement noise cov (m * m)
 * K: kalman gain matrix (determined from C, P, R) (n * m)
 
-# How To Install
+## How To Install
 
 There are no dependencies to any third-party libraries. Project should be ready to go out of the box.
+
+## Command Line Options
+
+* -c: prints KF state to console
+* -f <filename>: logs KF state to file
